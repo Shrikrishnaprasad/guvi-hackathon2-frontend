@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center"
   },
   heading: {
-    fontSize: theme.typography.pxToRem(20),
+    fontSize: theme.typography.pxToRem(16),
     fontWeight: theme.typography.fontWeightRegular
   }
 }));
@@ -59,7 +59,7 @@ export default function ListContent() {
 
   return (
     <div className={classes.root}>
-      <Typography component="h2" variant="h4" color="inherit" gutterBottom>
+      <Typography component="h2" variant="h4" color="primary" gutterBottom>
         India's Largest Construction Equipment Inventory
       </Typography>
       <br />
@@ -75,7 +75,9 @@ export default function ListContent() {
               <Typography className={classes.heading}>{data.head}</Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <Typography variant="h6">{data.desc}</Typography>
+              <Typography variant="body1" color="textSecondary">
+                {data.desc}
+              </Typography>
             </AccordionDetails>
           </Accordion>
         );

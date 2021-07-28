@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
   },
   heroContent: {
     backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(8, 0, 6)
+    padding: theme.spacing(2, 0)
   },
   heroButtons: {
     marginTop: theme.spacing(2)
@@ -94,8 +94,7 @@ export default function Product({ cartCount, setCartCount }) {
         <div className={classes.heroContent}>
           <Container maxWidth="sm">
             <Typography
-              component="h1"
-              variant="h3"
+              variant="h4"
               align="center"
               color="textPrimary"
               gutterBottom
@@ -103,7 +102,7 @@ export default function Product({ cartCount, setCartCount }) {
               Products
             </Typography>
             <Typography
-              variant="h6"
+              variant="subtitle1"
               align="center"
               color="textSecondary"
               paragraph

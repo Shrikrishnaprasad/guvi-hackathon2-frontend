@@ -35,7 +35,7 @@ export default function Details() {
               </Typography>
             </Grid>
           </Grid>
-          <Typography color="textSecondary" variant="h6">
+          <Typography color="textSecondary" variant="subtitle1">
             Buy, Sell, Hire @ Equipment Rentals India (ERI)- India’s leading
             construction equipment aggregator web portal to buy, sell, and rent
             heavy construction machinery. The online portal has an extensive
@@ -68,7 +68,7 @@ export default function Details() {
               </Typography>
             </Grid>
           </Grid>
-          <Typography color="textSecondary" variant="h6">
+          <Typography color="textSecondary" variant="subtitle1">
             Spare part is the backbone of any machinery. Equipment Rentals India
             provides a wide range of all the spare parts, tools and attachments
             for your construction machinery. Equipment Rentals India ensures the

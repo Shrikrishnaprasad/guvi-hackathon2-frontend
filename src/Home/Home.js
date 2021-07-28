@@ -59,10 +59,12 @@ export default function Home() {
             ))}
           </Grid>
           <br />
+          <br />
           <TimeLine />
           <br />
           <Details />
           <ImageListContent />
+          <br />
           <br />
           <ListContent />
           <br />
