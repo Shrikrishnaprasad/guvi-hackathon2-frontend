@@ -11,7 +11,7 @@ import { useState } from "react";
 import Cart from "./Cart/Cart";
 
 export default function App() {
-  const [user, setUser] = useState("");
+  const [user, setUser] = useState("admin");
   const [cartCount, setCartCount] = useState(0);
   return (
     <div className="App">
