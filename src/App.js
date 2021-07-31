@@ -9,6 +9,7 @@ import Product from "./Product/Product";
 import Contact from "./Contact";
 import { useState } from "react";
 import Cart from "./Cart/Cart";
+import ProductDetails from "./Product/ProductDetails";
 
 export default function App() {
   const [user, setUser] = useState("admin");
@@ -28,6 +29,9 @@ export default function App() {
         </Route>
         <Route path="/product">
           <Product cartCount={cartCount} setCartCount={setCartCount} />
+        </Route>
+        <Route path="/productDetails/:id">
+          <ProductDetails cartCount={cartCount} setCartCount={setCartCount} />
         </Route>
         <Route path="/cart">
           <Cart />

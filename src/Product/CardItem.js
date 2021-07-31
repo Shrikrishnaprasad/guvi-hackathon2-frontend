@@ -8,6 +8,7 @@ import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import { AddShoppingCart, RemoveShoppingCart } from "@material-ui/icons";
 import { useState } from "react";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles({
   root: {
@@ -18,12 +19,14 @@ const useStyles = makeStyles({
   }
 });
 
-export default function CardItem({ product, cartCount, setCartCount }) {
+export default function CardItem({ id, product, cartCount, setCartCount }) {
   const classes = useStyles();
+  const history = useHistory();
+
   const [added, setAdded] = useState(false);
   return (
     <Card className={classes.root}>
-      <CardActionArea>
+      <CardActionArea onClick={() => history.push(`/productDetails/${id}`)}>
         <CardMedia
           className={classes.media}
           image={product.avatar}

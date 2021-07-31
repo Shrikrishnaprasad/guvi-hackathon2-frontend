@@ -51,7 +51,8 @@ const invoiceTotal = invoiceTaxes + invoiceSubtotal;
 
 export default function Cart() {
   const classes = useStyles();
-  const [selectedDate, handleDateChange] = useState(new Date());
+  const [fromDate, setFromDate] = useState(new Date());
+  const [toDate, setToDate] = useState(new Date());
   return (
     <TableContainer component={Paper}>
       <Table className={classes.table} aria-label="spanning table">
@@ -61,18 +62,22 @@ export default function Cart() {
               Details
             </TableCell>
             <TableCell align="right">Price</TableCell>
-            <TableCell align="right">Date</TableCell>
+            <TableCell align="center" colSpan={2}>
+              Date
+            </TableCell>
           </TableRow>
           <TableRow>
             <TableCell>Desc</TableCell>
             <TableCell align="right">Qty.</TableCell>
             <TableCell align="right">Unit</TableCell>
             <TableCell align="right">Sum</TableCell>
-            <TableCell align="right">Date.</TableCell>
+            <TableCell align="center" colSpan={2}>
+              From. - To.
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
+          {rows.map((row, index) => (
             <TableRow key={row.desc}>
               <TableCell>{row.desc}</TableCell>
               <TableCell align="right">{row.qty}</TableCell>
@@ -80,17 +85,31 @@ export default function Cart() {
               <TableCell align="right">{row.unit}</TableCell>
               <TableCell align="right">{ccyFormat(row.price)}</TableCell>
               <TableCell align="right">
-                <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <MuiPickersUtilsProvider key={index} utils={DateFnsUtils}>
                   <KeyboardDatePicker
                     disableToolbar
                     variant="inline"
                     format="MM/dd/yyyy"
                     margin="normal"
                     minDate={new Date()}
-                    id="date-picker-inline"
-                    label="Date picker inline"
-                    value={selectedDate}
-                    onChange={(date) => handleDateChange(date)}
+                    id="fromDate"
+                    label="From-Date"
+                    value={fromDate}
+                    onChange={(date) => setFromDate(date)}
+                    KeyboardButtonProps={{
+                      "aria-label": "change date"
+                    }}
+                  />
+                  <KeyboardDatePicker
+                    disableToolbar
+                    variant="inline"
+                    format="MM/dd/yyyy"
+                    margin="normal"
+                    minDate={new Date()}
+                    id="toDate"
+                    label="To-Date"
+                    value={toDate}
+                    onChange={(date) => setToDate(date)}
                     KeyboardButtonProps={{
                       "aria-label": "change date"
                     }}
