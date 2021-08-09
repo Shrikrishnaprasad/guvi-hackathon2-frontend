@@ -28,7 +28,6 @@ export default function ProductDetails({ cartCount, setCartCount }) {
   const { id } = useParams();
 
   const [productDetail, setProductDetail] = useState({});
-  const [added, setAdded] = useState(false);
 
   useEffect(() => {
     loadProductDetail(id);
@@ -40,8 +39,21 @@ export default function ProductDetails({ cartCount, setCartCount }) {
     })
       .then((data) => data.json())
       .then((data) => setProductDetail(data));
-    console.log(productDetail);
   }
+  const addCart = (id, isCart) => {
+    fetch(`https://60c83b2fafc88600179f660c.mockapi.io/user/product/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ isCart: isCart })
+    })
+      .then((data) => data.json())
+      .then((data) => {
+        loadProductDetail(id);
+        isCart ? alert("Added to cart !!") : alert("Removed from cart !!");
+      });
+  };
 
   return (
     <>
@@ -82,13 +94,19 @@ export default function ProductDetails({ cartCount, setCartCount }) {
 
           <Button
             size="large"
-            style={{ color: !added ? "green" : "red" }}
+            style={{ color: !productDetail.isCart ? "green" : "red" }}
             onClick={() => {
-              setCartCount(!added ? cartCount + 1 : cartCount - 1);
-              setAdded(!added);
+              setCartCount(
+                !productDetail.isCart ? cartCount + 1 : cartCount - 1
+              );
+              addCart(id, !productDetail.isCart);
             }}
           >
-            {!added ? <AddShoppingCart /> : <RemoveShoppingCart />}
+            {!productDetail.isCart ? (
+              <AddShoppingCart />
+            ) : (
+              <RemoveShoppingCart />
+            )}
           </Button>
         </CardActions>
       </Card>

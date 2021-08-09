@@ -1,13 +1,14 @@
 import { makeStyles } from "@material-ui/core/styles";
-import Card from "@material-ui/core/Card";
-import CardActionArea from "@material-ui/core/CardActionArea";
-import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
-import CardMedia from "@material-ui/core/CardMedia";
-import Button from "@material-ui/core/Button";
+import {
+  Card,
+  CardActionArea,
+  CardActions,
+  CardContent,
+  CardMedia,
+  Button
+} from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import { AddShoppingCart, RemoveShoppingCart } from "@material-ui/icons";
-import { useState } from "react";
 import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles({
@@ -19,11 +20,26 @@ const useStyles = makeStyles({
   }
 });
 
-export default function CardItem({ id, product, cartCount, setCartCount }) {
+export default function CardItem({ id, product, getProduct }) {
   const classes = useStyles();
   const history = useHistory();
 
-  const [added, setAdded] = useState(false);
+  //const [added, setAdded] = useState(false);
+
+  const addCart = (id, isCart) => {
+    fetch(`https://60c83b2fafc88600179f660c.mockapi.io/user/product/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ isCart: isCart })
+    })
+      .then((data) => data.json())
+      .then((data) => {
+        getProduct();
+        isCart ? alert("Added to cart !!") : alert("Removed from cart !!");
+      });
+  };
   return (
     <Card className={classes.root}>
       <CardActionArea onClick={() => history.push(`/productDetails/${id}`)}>
@@ -55,13 +71,13 @@ export default function CardItem({ id, product, cartCount, setCartCount }) {
         </Button>
         <Button
           size="large"
-          style={{ color: !added ? "green" : "red" }}
+          style={{ color: !product.isCart ? "green" : "red" }}
           onClick={() => {
-            setCartCount(!added ? cartCount + 1 : cartCount - 1);
-            setAdded(!added);
+            //setCartCount(!product.isCart ? cartCount + 1 : cartCount - 1);
+            addCart(product.id, !product.isCart);
           }}
         >
-          {!added ? <AddShoppingCart /> : <RemoveShoppingCart />}
+          {!product.isCart ? <AddShoppingCart /> : <RemoveShoppingCart />}
         </Button>
       </CardActions>
     </Card>

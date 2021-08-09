@@ -50,6 +50,8 @@ export default function Product({ cartCount, setCartCount }) {
       .then((data) => {
         setProducts(data);
         setProductsFilter(data);
+        const count = data.filter((product) => product.isCart).length;
+        setCartCount(count);
       })
       .catch((e) => console.log(e));
   }
@@ -152,8 +154,7 @@ export default function Product({ cartCount, setCartCount }) {
                 <CardItem
                   id={product.id}
                   product={product}
-                  cartCount={cartCount}
-                  setCartCount={setCartCount}
+                  getProduct={getProduct}
                 />
               </Grid>
             ))}

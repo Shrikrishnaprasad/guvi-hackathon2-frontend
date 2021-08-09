@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -7,52 +7,58 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import { KeyboardDatePicker } from "@material-ui/pickers";
-import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import "date-fns";
-import DateFnsUtils from "@date-io/date-fns";
+import ItemRow from "./ItemRow";
 
-const TAX_RATE = 0.07;
+const TAX_RATE = 0.03;
 
 const useStyles = makeStyles({
   table: {
-    minWidth: 700,
-    maxWidth: 1024,
+    minWidth: 720,
+    maxWidth: 1184,
     margin: "auto"
+  },
+  btn: {
+    background: "grey",
+    color: "white",
+    margin: "0px 8px",
+    cursor: "pointer",
+    fontSize: "20px"
   }
 });
 
-function ccyFormat(num) {
-  return `${num.toFixed(2)}`;
-}
-
-function priceRow(qty, unit) {
-  return qty * unit;
-}
-
-function createRow(desc, qty, unit) {
-  const price = priceRow(qty, unit);
-  return { desc, qty, unit, price };
-}
-
-function subtotal(items) {
-  return items.map(({ price }) => price).reduce((sum, i) => sum + i, 0);
-}
-
-const rows = [
-  createRow("Paperclips (Box)", 100, 1.15),
-  createRow("Paper (Case)", 10, 45.99),
-  createRow("Waste Basket", 2, 17.99)
-];
-
-const invoiceSubtotal = subtotal(rows);
-const invoiceTaxes = TAX_RATE * invoiceSubtotal;
-const invoiceTotal = invoiceTaxes + invoiceSubtotal;
-
 export default function Cart() {
+  const [products, setProducts] = useState([]);
+  const [invoiceSubtotal, setInvoiceSubtotal] = useState(1);
+  const [invoiceTaxes, setInvoiceTaxes] = useState(1);
+  const [invoiceTotal, setInvoiceTotal] = useState(0);
+
+  function getProducts() {
+    fetch("https://60c83b2fafc88600179f660c.mockapi.io/user/product", {
+      method: "GET"
+    })
+      .then((data) => data.json())
+      .then((data) => {
+        const products = data.filter((product) => product.isCart);
+        setProducts(products);
+        const subTotal = products
+          .map(({ rent }) => rent)
+          .reduce((sum, i) => sum + +i, 0);
+        setInvoiceSubtotal(subTotal);
+        setInvoiceTaxes(TAX_RATE * subTotal);
+        setInvoiceTotal(invoiceTaxes + subTotal);
+      })
+      .catch((e) => console.log(e));
+  }
+
+  useEffect(() => {
+    getProducts();
+  }, []);
+  useEffect(() => {
+    setInvoiceTaxes(TAX_RATE * invoiceSubtotal);
+    setInvoiceTotal(invoiceTaxes + invoiceSubtotal);
+  }, [invoiceSubtotal]);
   const classes = useStyles();
-  const [fromDate, setFromDate] = useState(new Date());
-  const [toDate, setToDate] = useState(new Date());
   return (
     <TableContainer component={Paper}>
       <Table className={classes.table} aria-label="spanning table">
@@ -68,7 +74,7 @@ export default function Cart() {
           </TableRow>
           <TableRow>
             <TableCell>Desc</TableCell>
-            <TableCell align="right">Qty.</TableCell>
+            <TableCell align="right">Rent.</TableCell>
             <TableCell align="right">Unit</TableCell>
             <TableCell align="right">Sum</TableCell>
             <TableCell align="center" colSpan={2}>
@@ -77,63 +83,30 @@ export default function Cart() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row, index) => (
-            <TableRow key={row.desc}>
-              <TableCell>{row.desc}</TableCell>
-              <TableCell align="right">{row.qty}</TableCell>
-
-              <TableCell align="right">{row.unit}</TableCell>
-              <TableCell align="right">{ccyFormat(row.price)}</TableCell>
-              <TableCell align="right">
-                <MuiPickersUtilsProvider key={index} utils={DateFnsUtils}>
-                  <KeyboardDatePicker
-                    disableToolbar
-                    variant="inline"
-                    format="MM/dd/yyyy"
-                    margin="normal"
-                    minDate={new Date()}
-                    id="fromDate"
-                    label="From-Date"
-                    value={fromDate}
-                    onChange={(date) => setFromDate(date)}
-                    KeyboardButtonProps={{
-                      "aria-label": "change date"
-                    }}
-                  />
-                  <KeyboardDatePicker
-                    disableToolbar
-                    variant="inline"
-                    format="MM/dd/yyyy"
-                    margin="normal"
-                    minDate={new Date()}
-                    id="toDate"
-                    label="To-Date"
-                    value={toDate}
-                    onChange={(date) => setToDate(date)}
-                    KeyboardButtonProps={{
-                      "aria-label": "change date"
-                    }}
-                  />
-                </MuiPickersUtilsProvider>
-              </TableCell>
-            </TableRow>
+          {products.map((row, index) => (
+            <ItemRow
+              key={index}
+              row={row}
+              classbtn={classes.btn}
+              setInvoiceSubtotal={setInvoiceSubtotal}
+            />
           ))}
 
           <TableRow>
             <TableCell rowSpan={3} />
             <TableCell colSpan={2}>Subtotal</TableCell>
-            <TableCell align="right">{ccyFormat(invoiceSubtotal)}</TableCell>
+            <TableCell align="right">{invoiceSubtotal}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell>Tax</TableCell>
             <TableCell align="right">{`${(TAX_RATE * 100).toFixed(
               0
             )} %`}</TableCell>
-            <TableCell align="right">{ccyFormat(invoiceTaxes)}</TableCell>
+            <TableCell align="right">{invoiceTaxes.toFixed(2)}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell colSpan={2}>Total</TableCell>
-            <TableCell align="right">{ccyFormat(invoiceTotal)}</TableCell>
+            <TableCell align="right">{invoiceTotal.toFixed(2)}</TableCell>
           </TableRow>
         </TableBody>
       </Table>
