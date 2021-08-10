@@ -7,6 +7,7 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import CardItem from "./CardItem";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   icon: {
@@ -38,6 +39,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Product({ cartCount, setCartCount }) {
   const classes = useStyles();
+  const history = useHistory();
   const [products, setProducts] = useState([]);
   const [productsFilter, setProductsFilter] = useState([]);
   const [category, setCategory] = useState([]);
@@ -94,6 +96,15 @@ export default function Product({ cartCount, setCartCount }) {
       <main>
         {/* Hero unit */}
         <div className={classes.heroContent}>
+          <Button
+            variant="contained"
+            size="large"
+            color="primary"
+            style={{ float: "right" }}
+            onClick={() => history.push("/addProduct")}
+          >
+            Add product
+          </Button>
           <Container maxWidth="sm">
             <Typography
               variant="h4"
@@ -103,6 +114,7 @@ export default function Product({ cartCount, setCartCount }) {
             >
               Products
             </Typography>
+
             <Typography
               variant="subtitle1"
               align="center"

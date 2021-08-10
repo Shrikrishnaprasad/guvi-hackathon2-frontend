@@ -10,6 +10,8 @@ import Contact from "./Contact";
 import { useEffect, useState } from "react";
 import Cart from "./Cart/Cart";
 import ProductDetails from "./Product/ProductDetails";
+import { AddProduct } from "./Product/AddProduct";
+import { EditProduct } from "./Product/EditProduct";
 
 export default function App() {
   const [user, setUser] = useState("admin");
@@ -40,6 +42,12 @@ export default function App() {
         </Route>
         <Route path="/signup">
           <SignUp />
+        </Route>
+        <Route path="/addProduct">
+          <AddProduct />
+        </Route>
+        <Route path="/editProduct/:id">
+          <EditProduct />
         </Route>
         <Route path="/product">
           <Product cartCount={cartCount} setCartCount={setCartCount} />

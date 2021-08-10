@@ -8,7 +8,12 @@ import {
   Button
 } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
-import { AddShoppingCart, RemoveShoppingCart } from "@material-ui/icons";
+import {
+  AddShoppingCart,
+  Create,
+  DeleteForever,
+  RemoveShoppingCart
+} from "@material-ui/icons";
 import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles({
@@ -38,6 +43,16 @@ export default function CardItem({ id, product, getProduct }) {
       .then((data) => {
         getProduct();
         isCart ? alert("Added to cart !!") : alert("Removed from cart !!");
+      });
+  };
+  const deleteProduct = (id) => {
+    fetch(`https://60c83b2fafc88600179f660c.mockapi.io/user/product/${id}`, {
+      method: "DELETE"
+    })
+      .then((data) => data.json())
+      .then((data) => {
+        getProduct();
+        alert("Product deleted !");
       });
   };
   return (
@@ -75,6 +90,15 @@ export default function CardItem({ id, product, getProduct }) {
           }}
         >
           {!product.isCart ? <AddShoppingCart /> : <RemoveShoppingCart />}
+        </Button>
+        <Button
+          color="primary"
+          onClick={() => history.push(`/editProduct/${product.id}`)}
+        >
+          <Create />
+        </Button>
+        <Button color="secondary" onClick={() => deleteProduct(product.id)}>
+          <DeleteForever />
         </Button>
       </CardActions>
     </Card>
