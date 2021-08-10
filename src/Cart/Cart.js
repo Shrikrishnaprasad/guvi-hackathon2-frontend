@@ -78,7 +78,7 @@ export default function Cart() {
             <TableCell align="right">Unit</TableCell>
             <TableCell align="right">Sum</TableCell>
             <TableCell align="center" colSpan={2}>
-              From. - To.
+              From. - To. ( * double click to select the date)
             </TableCell>
           </TableRow>
         </TableHead>

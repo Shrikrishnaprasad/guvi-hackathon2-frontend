@@ -49,7 +49,7 @@ export default function CardItem({ id, product, getProduct }) {
           title={product.name}
         />
         <CardContent>
-          <Typography gutterBottom variant="h5" component="h2">
+          <Typography gutterBottom variant="h6" component="h3">
             {product.name}
           </Typography>
           <Typography variant="body2" color="textSecondary" component="p">
@@ -61,10 +61,7 @@ export default function CardItem({ id, product, getProduct }) {
       </CardActionArea>
       <CardActions>
         <Button size="large" color="secondary">
-          {product.hours.toString()[1] == 0
-            ? product.hours.toString()[2]
-            : product.hours.toString()[1]}{" "}
-          - hrs
+          {product.hours} - hrs
         </Button>
         <Button size="large" style={{ color: "green" }}>
           $.{product.rent}

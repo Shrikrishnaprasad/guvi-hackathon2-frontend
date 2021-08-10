@@ -11,7 +11,11 @@ export default function ItemRow({ row, classbtn, setInvoiceSubtotal }) {
   const [itemCount, setItemCount] = useState(1);
   const [fromDate, setFromDate] = useState(new Date());
   const [toDate, setToDate] = useState(new Date());
+  const [days, setDays] = useState(1);
+  const [daysCost, setDaysCost] = useState(1);
+  const [daysCostTotal, setDaysCostTotal] = useState([]);
 
+  console.log(daysCostTotal);
   return (
     <TableRow key={row.id}>
       <TableCell>{row.name}</TableCell>
@@ -43,11 +47,14 @@ export default function ItemRow({ row, classbtn, setInvoiceSubtotal }) {
           +
         </button>
       </TableCell>
-      <TableCell align="right"> {row.rent * itemCount}</TableCell>
+      <TableCell align="right">
+        {" "}
+        ({days <= 0 ? 1 : days}- {days === 1 ? "day" : "days"}) :{" "}
+        {row.rent * itemCount}
+      </TableCell>
       <TableCell align="right">
         <MuiPickersUtilsProvider key={row.id} utils={DateFnsUtils}>
           <KeyboardDatePicker
-            disableToolbar
             variant="inline"
             format="MM/dd/yyyy"
             margin="normal"
@@ -55,21 +62,32 @@ export default function ItemRow({ row, classbtn, setInvoiceSubtotal }) {
             id="fromDate"
             label="From-Date"
             value={fromDate}
-            onChange={(date) => setFromDate(date)}
+            onChange={(date) => {
+              setDays(toDate.getDate() - fromDate.getDate() + 1);
+              setFromDate(date);
+              setDaysCost(row.rent * itemCount * days);
+            }}
             KeyboardButtonProps={{
               "aria-label": "change date"
             }}
           />
           <KeyboardDatePicker
-            disableToolbar
             variant="inline"
             format="MM/dd/yyyy"
             margin="normal"
-            minDate={new Date()}
+            minDate={fromDate}
             id="toDate"
             label="To-Date"
             value={toDate}
-            onChange={(date) => setToDate(date)}
+            onChange={(date) => {
+              setDays(toDate.getDate() - fromDate.getDate() + 1);
+              setToDate(date);
+              setDaysCost(row.rent * itemCount * days);
+              setDaysCostTotal((prev) => {
+                const id = row.id;
+                return { ...daysCostTotal, id, cost: daysCost };
+              });
+            }}
             KeyboardButtonProps={{
               "aria-label": "change date"
             }}
