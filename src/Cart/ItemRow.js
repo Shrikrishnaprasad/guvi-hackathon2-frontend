@@ -1,21 +1,16 @@
 import { TableCell, TableRow } from "@material-ui/core";
-import {
-  KeyboardDatePicker,
-  MuiPickersUtilsProvider
-} from "@material-ui/pickers";
-import DateFnsUtils from "@date-io/date-fns";
+import { Remove } from "@material-ui/icons";
 
 import { useState } from "react";
 
-export default function ItemRow({ row, classbtn, setInvoiceSubtotal }) {
+export default function ItemRow({
+  row,
+  classbtn,
+  setInvoiceSubtotal,
+  removeCart
+}) {
   const [itemCount, setItemCount] = useState(1);
-  const [fromDate, setFromDate] = useState(new Date());
-  const [toDate, setToDate] = useState(new Date());
-  const [days, setDays] = useState(1);
-  const [daysCost, setDaysCost] = useState(1);
-  const [daysCostTotal, setDaysCostTotal] = useState([]);
 
-  console.log(daysCostTotal);
   return (
     <TableRow key={row.id}>
       <TableCell>{row.name}</TableCell>
@@ -47,52 +42,19 @@ export default function ItemRow({ row, classbtn, setInvoiceSubtotal }) {
           +
         </button>
       </TableCell>
-      <TableCell align="right">
+      <TableCell align="right"> {row.rent * itemCount}</TableCell>
+      <TableCell>
         {" "}
-        ({days <= 0 ? 1 : days}- {days === 1 ? "day" : "days"}) :{" "}
-        {row.rent * itemCount}
-      </TableCell>
-      <TableCell align="right">
-        <MuiPickersUtilsProvider key={row.id} utils={DateFnsUtils}>
-          <KeyboardDatePicker
-            variant="inline"
-            format="MM/dd/yyyy"
-            margin="normal"
-            minDate={new Date()}
-            id="fromDate"
-            label="From-Date"
-            value={fromDate}
-            onChange={(date) => {
-              setDays(toDate.getDate() - fromDate.getDate() + 1);
-              setFromDate(date);
-              setDaysCost(row.rent * itemCount * days);
-            }}
-            KeyboardButtonProps={{
-              "aria-label": "change date"
-            }}
-          />
-          <KeyboardDatePicker
-            variant="inline"
-            format="MM/dd/yyyy"
-            margin="normal"
-            minDate={fromDate}
-            id="toDate"
-            label="To-Date"
-            value={toDate}
-            onChange={(date) => {
-              setDays(toDate.getDate() - fromDate.getDate() + 1);
-              setToDate(date);
-              setDaysCost(row.rent * itemCount * days);
-              setDaysCostTotal((prev) => {
-                const id = row.id;
-                return { ...daysCostTotal, id, cost: daysCost };
-              });
-            }}
-            KeyboardButtonProps={{
-              "aria-label": "change date"
-            }}
-          />
-        </MuiPickersUtilsProvider>
+        <Remove
+          color="secondary"
+          style={{
+            background: "lightgrey",
+            borderRadius: "24px",
+            cursor: "pointer",
+            padding: "4px"
+          }}
+          onClick={() => removeCart(row.id)}
+        />{" "}
       </TableCell>
     </TableRow>
   );

@@ -1,14 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Button
+} from "@material-ui/core";
 import "date-fns";
+import {
+  KeyboardDatePicker,
+  MuiPickersUtilsProvider
+} from "@material-ui/pickers";
+import DateFnsUtils from "@date-io/date-fns";
 import ItemRow from "./ItemRow";
+import PayByRazorPay from "./PayByRazorPay";
 
 const TAX_RATE = 0.03;
 
@@ -32,7 +41,10 @@ export default function Cart() {
   const [invoiceSubtotal, setInvoiceSubtotal] = useState(1);
   const [invoiceTaxes, setInvoiceTaxes] = useState(1);
   const [invoiceTotal, setInvoiceTotal] = useState(0);
-
+  const [fromDate, setFromDate] = useState(new Date());
+  const [toDate, setToDate] = useState(new Date());
+  const [daysCost, setDaysCost] = useState(1);
+  const [days, setDays] = useState(1);
   function getProducts() {
     fetch("https://60c83b2fafc88600179f660c.mockapi.io/user/product", {
       method: "GET"
@@ -50,14 +62,29 @@ export default function Cart() {
       })
       .catch((e) => console.log(e));
   }
-
+  const removeCart = (id) => {
+    fetch(`https://60c83b2fafc88600179f660c.mockapi.io/user/product/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ isCart: false })
+    })
+      .then((data) => data.json())
+      .then((data) => {
+        getProducts();
+        alert("Removed from cart !");
+      });
+  };
   useEffect(() => {
     getProducts();
   }, []);
   useEffect(() => {
     setInvoiceTaxes(TAX_RATE * invoiceSubtotal);
-    setInvoiceTotal(invoiceTaxes + invoiceSubtotal);
-  }, [invoiceSubtotal]);
+    setInvoiceTotal(
+      invoiceTaxes + invoiceSubtotal + (days === 1 ? 0 : daysCost)
+    );
+  }, [invoiceSubtotal, fromDate, toDate]);
   const classes = useStyles();
   return (
     <TableContainer component={Paper}>
@@ -68,17 +95,19 @@ export default function Cart() {
               Details
             </TableCell>
             <TableCell align="right">Price</TableCell>
-            <TableCell align="center" colSpan={2}>
-              Date
-            </TableCell>
           </TableRow>
           <TableRow>
-            <TableCell>Desc</TableCell>
-            <TableCell align="right">Rent.</TableCell>
-            <TableCell align="right">Unit</TableCell>
-            <TableCell align="right">Sum</TableCell>
-            <TableCell align="center" colSpan={2}>
-              From. - To. ( * double click to select the date)
+            <TableCell>
+              <b>Desc</b>
+            </TableCell>
+            <TableCell align="right">
+              <b>Rent</b>
+            </TableCell>
+            <TableCell align="right">
+              <b>Qty</b>
+            </TableCell>
+            <TableCell align="right">
+              <b>Sum</b>
             </TableCell>
           </TableRow>
         </TableHead>
@@ -89,11 +118,12 @@ export default function Cart() {
               row={row}
               classbtn={classes.btn}
               setInvoiceSubtotal={setInvoiceSubtotal}
+              removeCart={removeCart}
             />
           ))}
 
           <TableRow>
-            <TableCell rowSpan={3} />
+            <TableCell rowSpan={2} />
             <TableCell colSpan={2}>Subtotal</TableCell>
             <TableCell align="right">{invoiceSubtotal}</TableCell>
           </TableRow>
@@ -105,11 +135,64 @@ export default function Cart() {
             <TableCell align="right">{invoiceTaxes.toFixed(2)}</TableCell>
           </TableRow>
           <TableRow>
-            <TableCell colSpan={2}>Total</TableCell>
-            <TableCell align="right">{invoiceTotal.toFixed(2)}</TableCell>
+            <TableCell colSpan={2} align="right">
+              <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <KeyboardDatePicker
+                  variant="inline"
+                  format="MM/dd/yyyy"
+                  margin="normal"
+                  minDate={new Date()}
+                  id="fromDate"
+                  label="From-Date"
+                  value={fromDate}
+                  onChange={(date) => {
+                    setDays(toDate.getDate() - date.getDate() + 1);
+                    setFromDate(date);
+                    setDaysCost(invoiceSubtotal * days);
+                  }}
+                  KeyboardButtonProps={{
+                    "aria-label": "change date"
+                  }}
+                />
+                <KeyboardDatePicker
+                  variant="inline"
+                  format="MM/dd/yyyy"
+                  margin="normal"
+                  minDate={fromDate}
+                  id="toDate"
+                  label="To-Date"
+                  value={toDate}
+                  onChange={(date) => {
+                    setDays(date.getDate() - fromDate.getDate() + 1);
+                    setToDate(date);
+                    setDaysCost(invoiceSubtotal * days);
+                  }}
+                  KeyboardButtonProps={{
+                    "aria-label": "change date"
+                  }}
+                />
+              </MuiPickersUtilsProvider>
+              ( * Double select the date)
+            </TableCell>
+            <TableCell colSpan={1} align="right">
+              Days - {days}
+            </TableCell>
+            <TableCell colSpan={1} align="right">
+              {days === 1 ? 0 : daysCost}
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell colSpan={3}>Total</TableCell>
+            <TableCell align="right">
+              <b>{invoiceTotal.toFixed(2)}</b>
+            </TableCell>
           </TableRow>
         </TableBody>
       </Table>
+      <br />
+      <center>
+        <PayByRazorPay amount={invoiceTotal.toFixed(2)} />
+      </center>
     </TableContainer>
   );
 }

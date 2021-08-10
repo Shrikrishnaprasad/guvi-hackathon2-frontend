@@ -15,7 +15,7 @@ import ImageListContent from "./ImageListContent";
 const mainFeaturedPost = {
   title: "India's Largest Construction Equipment Inventory",
   description:
-    "Multiple lines of text that form the lede, informing new readers quickly and efficiently about what's most interesting in this post's contents.",
+    " The contractor can register at Equipment Rentals India and increase his clientage, grow his business, and complete his construction projects on time. The miscellaneous construction equipment ranges from the heavy and portable and lighter equipment to make the job easier and quicker. Register with Equipment Rentals India to sell, purchase, rent, or hire the construction equipment..",
   image:
     "http://images.unsplash.com/photo-1526406915894-7bcd65f60845?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxMjA3fDB8MXxzZWFyY2h8MXx8ZXF1aXBtZW50fHwwfHx8fDE2MjgzNDkzODE&ixlib=rb-1.2.1&q=80&w=1080",
   imgText: "main image description"
