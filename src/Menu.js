@@ -10,6 +10,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useHistory } from "react-router-dom";
 import { ShoppingCart } from "@material-ui/icons";
 import { Badge, IconButton } from "@material-ui/core";
+import { useGlobalContext } from "./context";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -48,7 +49,7 @@ const StyledBadge = withStyles((theme) => ({
 export default function Menu({ cartCount }) {
   const classes = useStyles();
   const history = useHistory();
-
+  const { loginToken, setLoginToken, username } = useGlobalContext();
   return (
     <>
       <CssBaseline />
@@ -108,14 +109,26 @@ export default function Menu({ cartCount }) {
               Contact us
             </Link>
           </nav>
+          {loginToken && (
+            <Typography
+              variant="h6"
+              color="inherit"
+              noWrap
+              onClick={() => history.push("/")}
+            >
+              Hi, {username}
+            </Typography>
+          )}
           <Button
             color="primary"
             variant="contained"
             className={classes.link}
-            onClick={() => history.push("/login")}
+            onClick={() => {
+              loginToken ? setLoginToken("") : history.push("/login");
+            }}
             style={{ background: "whitesmoke", color: "blue" }}
           >
-            Login
+            {!loginToken ? "Login" : "Logout"}
           </Button>
         </Toolbar>
       </AppBar>

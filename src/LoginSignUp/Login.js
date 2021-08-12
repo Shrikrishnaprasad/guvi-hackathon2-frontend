@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Avatar from "@material-ui/core/Avatar";
 
 import Button from "@material-ui/core/Button";
@@ -8,26 +8,12 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
-import Box from "@material-ui/core/Box";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import { useHistory } from "react-router-dom";
-
-function Copyright() {
-  const history = useHistory();
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {"Copyright © "}
-      <Link color="inherit" onClick={() => history.push("/")}>
-        Equipment Rental
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
+import { useGlobalContext } from "../context";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -52,6 +38,38 @@ const useStyles = makeStyles((theme) => ({
 export default function Login() {
   const classes = useStyles();
   const history = useHistory();
+  const { setLoginToken, setUsername } = useGlobalContext();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (email !== "" && password !== "") {
+      let headersList = {
+        Accept: "*/*",
+        "Content-Type": "application/json"
+      };
+      fetch("https://node-app-krishna.herokuapp.com/user/login", {
+        method: "POST",
+        body: JSON.stringify({ username: email, password }),
+        headers: headersList
+      })
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (data) {
+          if (data.username) {
+            setLoginToken(data.token);
+            setUsername(data.username);
+            history.push("/");
+          } else {
+            alert(data.message);
+          }
+        })
+        .catch((e) => console.log(e));
+    } else {
+      console.log("empty");
+    }
+  };
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -73,6 +91,8 @@ export default function Login() {
             name="email"
             autoComplete="email"
             autoFocus
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
           <TextField
             variant="outlined"
@@ -83,18 +103,22 @@ export default function Login() {
             label="Password"
             type="password"
             id="password"
+            value={password}
             autoComplete="current-password"
+            onChange={(e) => setPassword(e.target.value)}
           />
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
             label="Remember me"
           />
           <Button
-            type="submit"
+            type="button"
             fullWidth
             variant="contained"
             color="primary"
             className={classes.submit}
+            onClick={(e) => handleSubmit(e)}
+            disabled={email === "" && password === ""}
           >
             Sign In
           </Button>
@@ -112,9 +136,6 @@ export default function Login() {
           </Grid>
         </form>
       </div>
-      <Box mt={8}>
-        <Copyright />
-      </Box>
     </Container>
   );
 }

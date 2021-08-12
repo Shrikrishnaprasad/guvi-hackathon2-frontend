@@ -16,9 +16,15 @@ import { EditProduct } from "./Product/EditProduct";
 export default function App() {
   const [user, setUser] = useState("admin");
   const [cartCount, setCartCount] = useState(0);
+  const headersList = {
+    Accept: "*/*",
+    "x-auth-token":
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxMTNkZDg1ZGQ2MWFhMGQ1YjRhYzVkMyIsImlhdCI6MTYyODcwNDAyMX0.u_mjLG4hgTWFFjl4UVViU_kRmeEC3841h1jlsTe6xek"
+  };
   function getProduct() {
-    fetch("https://60c83b2fafc88600179f660c.mockapi.io/user/product", {
-      method: "GET"
+    fetch("https://node-app-krishna.herokuapp.com/product", {
+      method: "GET",
+      headers: headersList
     })
       .then((data) => data.json())
       .then((data) => {

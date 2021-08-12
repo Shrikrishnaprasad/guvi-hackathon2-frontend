@@ -8,6 +8,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import CardItem from "./CardItem";
 import { useHistory } from "react-router-dom";
+import { useGlobalContext } from "../context";
 
 const useStyles = makeStyles((theme) => ({
   icon: {
@@ -40,13 +41,21 @@ const useStyles = makeStyles((theme) => ({
 export default function Product({ cartCount, setCartCount }) {
   const classes = useStyles();
   const history = useHistory();
+  const { username } = useGlobalContext();
+
   const [products, setProducts] = useState([]);
   const [productsFilter, setProductsFilter] = useState([]);
   const [category, setCategory] = useState([]);
-
+  const headersList = {
+    Accept: "*/*",
+    "Content-Type": "application/json",
+    "x-auth-token":
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxMTNkZDg1ZGQ2MWFhMGQ1YjRhYzVkMyIsImlhdCI6MTYyODcwNDAyMX0.u_mjLG4hgTWFFjl4UVViU_kRmeEC3841h1jlsTe6xek"
+  };
   function getProduct() {
-    fetch("https://60c83b2fafc88600179f660c.mockapi.io/user/product", {
-      method: "GET"
+    fetch("https://node-app-krishna.herokuapp.com/product", {
+      method: "GET",
+      headers: headersList
     })
       .then((data) => data.json())
       .then((data) => {
@@ -58,8 +67,9 @@ export default function Product({ cartCount, setCartCount }) {
       .catch((e) => console.log(e));
   }
   function getCategory() {
-    fetch("https://60c83b2fafc88600179f660c.mockapi.io/user/product", {
-      method: "GET"
+    fetch("https://node-app-krishna.herokuapp.com/product", {
+      method: "GET",
+      headers: headersList
     })
       .then((data) => data.json())
       .then((data) => {
@@ -96,15 +106,19 @@ export default function Product({ cartCount, setCartCount }) {
       <main>
         {/* Hero unit */}
         <div className={classes.heroContent}>
-          <Button
-            variant="contained"
-            size="large"
-            color="primary"
-            style={{ float: "right" }}
-            onClick={() => history.push("/addProduct")}
-          >
-            Add product
-          </Button>
+          {username === "admin" ? (
+            <Button
+              variant="contained"
+              size="large"
+              color="primary"
+              style={{ float: "right" }}
+              onClick={() => history.push("/addProduct")}
+            >
+              Add product
+            </Button>
+          ) : (
+            ""
+          )}
           <Container maxWidth="sm">
             <Typography
               variant="h4"
@@ -162,9 +176,9 @@ export default function Product({ cartCount, setCartCount }) {
           )}
           <Grid container spacing={3}>
             {products.map((product) => (
-              <Grid item key={product.id} xs={12} sm={6} md={4} lg={3}>
+              <Grid item key={product._id} xs={12} sm={6} md={4} lg={3}>
                 <CardItem
-                  id={product.id}
+                  id={product._id}
                   product={product}
                   getProduct={getProduct}
                 />

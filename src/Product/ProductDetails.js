@@ -32,20 +32,24 @@ export default function ProductDetails({ cartCount, setCartCount }) {
   useEffect(() => {
     loadProductDetail(id);
   }, []);
-
+  const headersList = {
+    Accept: "*/*",
+    "Content-Type": "application/json",
+    "x-auth-token":
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxMTNkZDg1ZGQ2MWFhMGQ1YjRhYzVkMyIsImlhdCI6MTYyODcwNDAyMX0.u_mjLG4hgTWFFjl4UVViU_kRmeEC3841h1jlsTe6xek"
+  };
   function loadProductDetail(id) {
-    fetch(`https://60c83b2fafc88600179f660c.mockapi.io/user/product/${id}`, {
-      method: "GET"
+    fetch(`https://node-app-krishna.herokuapp.com/product/${id}`, {
+      method: "GET",
+      headers: headersList
     })
       .then((data) => data.json())
       .then((data) => setProductDetail(data));
   }
   const addCart = (id, isCart) => {
-    fetch(`https://60c83b2fafc88600179f660c.mockapi.io/user/product/${id}`, {
+    fetch(`https://node-app-krishna.herokuapp.com/product/${id}`, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: headersList,
       body: JSON.stringify({ isCart: isCart })
     })
       .then((data) => data.json())

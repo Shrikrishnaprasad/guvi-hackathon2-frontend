@@ -15,6 +15,7 @@ import {
   RemoveShoppingCart
 } from "@material-ui/icons";
 import { useHistory } from "react-router-dom";
+import { useGlobalContext } from "../context";
 
 const useStyles = makeStyles({
   root: {
@@ -28,15 +29,19 @@ const useStyles = makeStyles({
 export default function CardItem({ id, product, getProduct }) {
   const classes = useStyles();
   const history = useHistory();
+  const { username } = useGlobalContext();
 
   //const [added, setAdded] = useState(false);
-
+  const headersList = {
+    Accept: "*/*",
+    "Content-Type": "application/json",
+    "x-auth-token":
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxMTNkZDg1ZGQ2MWFhMGQ1YjRhYzVkMyIsImlhdCI6MTYyODcwNDAyMX0.u_mjLG4hgTWFFjl4UVViU_kRmeEC3841h1jlsTe6xek"
+  };
   const addCart = (id, isCart) => {
-    fetch(`https://60c83b2fafc88600179f660c.mockapi.io/user/product/${id}`, {
+    fetch(`https://node-app-krishna.herokuapp.com/product/${id}`, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: headersList,
       body: JSON.stringify({ isCart: isCart })
     })
       .then((data) => data.json())
@@ -46,8 +51,9 @@ export default function CardItem({ id, product, getProduct }) {
       });
   };
   const deleteProduct = (id) => {
-    fetch(`https://60c83b2fafc88600179f660c.mockapi.io/user/product/${id}`, {
-      method: "DELETE"
+    fetch(`https://node-app-krishna.herokuapp.com/product/${id}`, {
+      method: "DELETE",
+      headers: headersList
     })
       .then((data) => data.json())
       .then((data) => {
@@ -81,25 +87,34 @@ export default function CardItem({ id, product, getProduct }) {
         <Button size="large" style={{ color: "green" }}>
           $.{product.rent}
         </Button>
-        <Button
-          size="large"
-          style={{ color: !product.isCart ? "green" : "red" }}
-          onClick={() => {
-            //setCartCount(!product.isCart ? cartCount + 1 : cartCount - 1);
-            addCart(product.id, !product.isCart);
-          }}
-        >
-          {!product.isCart ? <AddShoppingCart /> : <RemoveShoppingCart />}
-        </Button>
-        <Button
-          color="primary"
-          onClick={() => history.push(`/editProduct/${product.id}`)}
-        >
-          <Create />
-        </Button>
-        <Button color="secondary" onClick={() => deleteProduct(product.id)}>
-          <DeleteForever />
-        </Button>
+
+        {username === "admin" ? (
+          <>
+            <Button
+              color="primary"
+              onClick={() => history.push(`/editProduct/${product._id}`)}
+            >
+              <Create />
+            </Button>
+            <Button
+              color="secondary"
+              onClick={() => deleteProduct(product._id)}
+            >
+              <DeleteForever />
+            </Button>
+          </>
+        ) : (
+          <Button
+            size="large"
+            style={{ color: !product.isCart ? "green" : "red" }}
+            onClick={() => {
+              //setCartCount(!product.isCart ? cartCount + 1 : cartCount - 1);
+              addCart(product._id, !product.isCart);
+            }}
+          >
+            {!product.isCart ? <AddShoppingCart /> : <RemoveShoppingCart />}
+          </Button>
+        )}
       </CardActions>
     </Card>
   );

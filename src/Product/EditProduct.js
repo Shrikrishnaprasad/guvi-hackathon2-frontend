@@ -25,14 +25,17 @@ export function EditProduct() {
   });
   const history = useHistory();
   const { id } = useParams();
-
+  const headersList = {
+    Accept: "*/*",
+    "Content-Type": "application/json",
+    "x-auth-token":
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxMTNkZDg1ZGQ2MWFhMGQ1YjRhYzVkMyIsImlhdCI6MTYyODcwNDAyMX0.u_mjLG4hgTWFFjl4UVViU_kRmeEC3841h1jlsTe6xek"
+  };
   const editProd = (data) => {
-    console.log("form data", data);
-    fetch(`https://60c83b2fafc88600179f660c.mockapi.io/user/product/${id}`, {
+    //console.log("form data", data);
+    fetch(`https://node-app-krishna.herokuapp.com/product/${id}`, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: headersList,
       body: JSON.stringify(data)
     })
       .then((data) => data.json())
@@ -48,8 +51,9 @@ export function EditProduct() {
 
   function loadProduct(id) {
     // Filter the contestant in the API
-    fetch(`https://60c83b2fafc88600179f660c.mockapi.io/user/product/${id}`, {
-      method: "GET"
+    fetch(`https://node-app-krishna.herokuapp.com/product/${id}`, {
+      method: "GET",
+      headers: headersList
     })
       .then((data) => data.json())
       .then((data) => {
@@ -64,8 +68,8 @@ export function EditProduct() {
       <Typography variant="h5" align="center" color="textPrimary" gutterBottom>
         Update Products
       </Typography>
-      {!product.id && <h1 style={{ textAlign: "center" }}>Loading ...</h1>}
-      {product.id && (
+      {!product._id && <h1 style={{ textAlign: "center" }}>Loading ...</h1>}
+      {product._id && (
         <div
           className="vote-form"
           style={{ display: "flex", flexDirection: "column", gap: "8px" }}

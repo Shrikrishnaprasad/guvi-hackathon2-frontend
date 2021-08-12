@@ -23,14 +23,17 @@ export function AddProduct() {
     resolver: yupResolver(ProductData)
   });
   const history = useHistory();
-
+  const headersList = {
+    Accept: "*/*",
+    "Content-Type": "application/json",
+    "x-auth-token":
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxMTNkZDg1ZGQ2MWFhMGQ1YjRhYzVkMyIsImlhdCI6MTYyODcwNDAyMX0.u_mjLG4hgTWFFjl4UVViU_kRmeEC3841h1jlsTe6xek"
+  };
   const addProd = (data) => {
-    console.log("form data", data);
-    fetch("https://60c83b2fafc88600179f660c.mockapi.io/user/product", {
+    //console.log("form data", data);
+    fetch("https://node-app-krishna.herokuapp.com/product/add", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: headersList,
       body: JSON.stringify(data)
     })
       .then((data) => data.json())
