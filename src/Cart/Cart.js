@@ -37,7 +37,7 @@ const useStyles = makeStyles({
 });
 
 export default function Cart() {
-  const { username, getProduct } = useGlobalContext();
+  const { username, getProduct, userPhone, userEmail } = useGlobalContext();
 
   const [products, setProducts] = useState([]);
   const [invoiceSubtotal, setInvoiceSubtotal] = useState(1);
@@ -198,7 +198,12 @@ export default function Cart() {
       </Table>
       <br />
       <center>
-        <PayByRazorPay amount={invoiceTotal.toFixed(2)} username={username} />
+        <PayByRazorPay
+          amount={invoiceTotal.toFixed(2)}
+          username={username}
+          userPhone={userPhone}
+          userEmail={userEmail}
+        />
       </center>
     </TableContainer>
   );

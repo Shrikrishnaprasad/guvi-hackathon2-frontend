@@ -38,7 +38,12 @@ const useStyles = makeStyles((theme) => ({
 export default function Login() {
   const classes = useStyles();
   const history = useHistory();
-  const { setLoginToken, setUsername } = useGlobalContext();
+  const {
+    setLoginToken,
+    setUsername,
+    setUserEmail,
+    setUserPhone
+  } = useGlobalContext();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const handleSubmit = (e) => {
@@ -57,9 +62,11 @@ export default function Login() {
           return response.json();
         })
         .then(function (data) {
-          if (data.username) {
+          if (data.user.username) {
             setLoginToken(data.token);
-            setUsername(data.username);
+            setUsername(data.user.username);
+            setUserPhone(data.user.phone);
+            setUserEmail(data.user.email);
             history.push("/");
           } else {
             alert(data.message);
@@ -119,7 +126,7 @@ export default function Login() {
             color="primary"
             className={classes.submit}
             onClick={(e) => handleSubmit(e)}
-            disabled={email === "" && password === ""}
+            disabled={email === "" || password === ""}
           >
             Sign In
           </Button>

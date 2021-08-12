@@ -5,6 +5,8 @@ const AppContext = React.createContext();
 const AppProvider = ({ children }) => {
   const [loginToken, setLoginToken] = useState("");
   const [username, setUsername] = useState("");
+  const [userPhone, setUserPhone] = useState("");
+  const [userEmail, setUserEmail] = useState("");
   const [cartCount, setCartCount] = useState(0);
   const headersList = {
     Accept: "*/*",
@@ -32,7 +34,11 @@ const AppProvider = ({ children }) => {
         setUsername,
         cartCount,
         setCartCount,
-        getProduct
+        getProduct,
+        userPhone,
+        setUserPhone,
+        userEmail,
+        setUserEmail
       }}
     >
       {children}

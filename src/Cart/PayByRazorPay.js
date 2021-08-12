@@ -2,7 +2,7 @@ import { Button } from "@material-ui/core";
 import React, { useEffect } from "react";
 import { useHistory } from "react-router-dom";
 
-const PayByRazorPay = ({ amount, username }) => {
+const PayByRazorPay = ({ amount, username, userPhone, userEmail }) => {
   const history = useHistory();
 
   const options = {
@@ -18,8 +18,8 @@ const PayByRazorPay = ({ amount, username }) => {
     },
     prefill: {
       name: username,
-      contact: "9999999999",
-      email: "demo@demo.com"
+      contact: userPhone,
+      email: userEmail
     },
     notes: {
       address: "some address"
