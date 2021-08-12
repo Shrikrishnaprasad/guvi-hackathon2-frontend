@@ -49,7 +49,12 @@ const StyledBadge = withStyles((theme) => ({
 export default function Menu({ cartCount }) {
   const classes = useStyles();
   const history = useHistory();
-  const { loginToken, setLoginToken, username } = useGlobalContext();
+  const {
+    loginToken,
+    setLoginToken,
+    username,
+    setUsername
+  } = useGlobalContext();
   return (
     <>
       <CssBaseline />
@@ -124,6 +129,8 @@ export default function Menu({ cartCount }) {
             variant="contained"
             className={classes.link}
             onClick={() => {
+              history.push("/login");
+              setUsername("");
               loginToken ? setLoginToken("") : history.push("/login");
             }}
             style={{ background: "whitesmoke", color: "blue" }}

@@ -1,7 +1,10 @@
 import { Button } from "@material-ui/core";
 import React, { useEffect } from "react";
+import { useHistory } from "react-router-dom";
 
-const PayByRazorPay = ({ amount }) => {
+const PayByRazorPay = ({ amount, username }) => {
+  const history = useHistory();
+
   const options = {
     key: "rzp_test_YkCd4OxHtBFQbV",
     amount: amount * 100, //  = INR 1 = 100 (so * 100)
@@ -11,9 +14,10 @@ const PayByRazorPay = ({ amount }) => {
     handler: function (response) {
       //alert(response.razorpay_payment_id);
       alert("Payment successfully done");
+      history.push("/");
     },
     prefill: {
-      name: "krishna",
+      name: username,
       contact: "9999999999",
       email: "demo@demo.com"
     },
@@ -27,8 +31,12 @@ const PayByRazorPay = ({ amount }) => {
   };
 
   const openPayModal = () => {
-    var rzp1 = new window.Razorpay(options);
-    rzp1.open();
+    if (username) {
+      var rzp1 = new window.Razorpay(options);
+      rzp1.open();
+    } else {
+      history.push("/login");
+    }
   };
   useEffect(() => {
     const script = document.createElement("script");
@@ -45,7 +53,7 @@ const PayByRazorPay = ({ amount }) => {
         size="large"
         color="primary"
       >
-        Pay with Razorpay
+        {username ? "Pay with Razorpay" : "Login to Pay"}
       </Button>
     </>
   );

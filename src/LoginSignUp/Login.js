@@ -44,7 +44,7 @@ export default function Login() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (email !== "" && password !== "") {
-      let headersList = {
+      const headersList = {
         Accept: "*/*",
         "Content-Type": "application/json"
       };
@@ -93,6 +93,7 @@ export default function Login() {
             autoFocus
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            type="email"
           />
           <TextField
             variant="outlined"

@@ -12,7 +12,7 @@ export default function ItemRow({
   const [itemCount, setItemCount] = useState(1);
 
   return (
-    <TableRow key={row.id}>
+    <TableRow key={row._id}>
       <TableCell>{row.name}</TableCell>
       <TableCell align="right">{row.rent}</TableCell>
       <TableCell align="right">
@@ -53,7 +53,7 @@ export default function ItemRow({
             cursor: "pointer",
             padding: "4px"
           }}
-          onClick={() => removeCart(row.id)}
+          onClick={() => removeCart(row._id)}
         />{" "}
       </TableCell>
     </TableRow>

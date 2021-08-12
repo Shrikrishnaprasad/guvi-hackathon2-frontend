@@ -7,8 +7,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
-  Button
+  Paper
 } from "@material-ui/core";
 import "date-fns";
 import {
@@ -18,6 +17,7 @@ import {
 import DateFnsUtils from "@date-io/date-fns";
 import ItemRow from "./ItemRow";
 import PayByRazorPay from "./PayByRazorPay";
+import { useGlobalContext } from "../context";
 
 const TAX_RATE = 0.03;
 
@@ -37,6 +37,8 @@ const useStyles = makeStyles({
 });
 
 export default function Cart() {
+  const { username, getProduct } = useGlobalContext();
+
   const [products, setProducts] = useState([]);
   const [invoiceSubtotal, setInvoiceSubtotal] = useState(1);
   const [invoiceTaxes, setInvoiceTaxes] = useState(1);
@@ -45,9 +47,17 @@ export default function Cart() {
   const [toDate, setToDate] = useState(new Date());
   const [daysCost, setDaysCost] = useState(1);
   const [days, setDays] = useState(1);
+
+  const headersList = {
+    Accept: "*/*",
+    "Content-Type": "application/json",
+    "x-auth-token":
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxMTNkZDg1ZGQ2MWFhMGQ1YjRhYzVkMyIsImlhdCI6MTYyODcwNDAyMX0.u_mjLG4hgTWFFjl4UVViU_kRmeEC3841h1jlsTe6xek"
+  };
   function getProducts() {
-    fetch("https://60c83b2fafc88600179f660c.mockapi.io/user/product", {
-      method: "GET"
+    fetch("https://node-app-krishna.herokuapp.com/product", {
+      method: "GET",
+      headers: headersList
     })
       .then((data) => data.json())
       .then((data) => {
@@ -63,22 +73,19 @@ export default function Cart() {
       .catch((e) => console.log(e));
   }
   const removeCart = (id) => {
-    fetch(`https://60c83b2fafc88600179f660c.mockapi.io/user/product/${id}`, {
+    fetch(`https://node-app-krishna.herokuapp.com/product/${id}`, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: headersList,
       body: JSON.stringify({ isCart: false })
     })
       .then((data) => data.json())
       .then((data) => {
+        getProduct();
         getProducts();
         alert("Removed from cart !");
       });
   };
-  useEffect(() => {
-    getProducts();
-  }, []);
+  getProducts();
   useEffect(() => {
     setInvoiceTaxes(TAX_RATE * invoiceSubtotal);
     setInvoiceTotal(
@@ -191,7 +198,7 @@ export default function Cart() {
       </Table>
       <br />
       <center>
-        <PayByRazorPay amount={invoiceTotal.toFixed(2)} />
+        <PayByRazorPay amount={invoiceTotal.toFixed(2)} username={username} />
       </center>
     </TableContainer>
   );
