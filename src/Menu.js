@@ -109,11 +109,25 @@ export default function Menu({ cartCount }) {
               variant="button"
               color="textPrimary"
               className={classes.link}
-              onClick={() => history.push("/contact")}
+              onClick={() =>
+                history.push(
+                  username === "admin" ? "/contactDetails" : "/contact"
+                )
+              }
             >
-              Contact us
+              {username === "admin" ? "Contact Details" : " Contact us"}
             </Link>
           </nav>
+          {username === "admin" && (
+            <Link
+              variant="button"
+              color="textPrimary"
+              className={classes.link}
+              onClick={() => history.push("/order")}
+            >
+              Orders
+            </Link>
+          )}
           {loginToken && (
             <Typography
               variant="h6"

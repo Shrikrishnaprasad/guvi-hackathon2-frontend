@@ -13,6 +13,8 @@ import ProductDetails from "./Product/ProductDetails";
 import { AddProduct } from "./Product/AddProduct";
 import { EditProduct } from "./Product/EditProduct";
 import { useGlobalContext } from "./context";
+import Order from "./Order";
+import ContactDetails from "./ContactDetails";
 
 export default function App() {
   const { getProduct, cartCount, setCartCount } = useGlobalContext();
@@ -46,6 +48,12 @@ export default function App() {
         </Route>
         <Route path="/cart">
           <Cart />
+        </Route>
+        <Route path="/order">
+          <Order />
+        </Route>
+        <Route path="/contactDetails">
+          <ContactDetails />
         </Route>
         <Route path="/contact">
           <Contact />
