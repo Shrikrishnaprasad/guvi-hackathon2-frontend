@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Button from "@material-ui/core/Button";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import TextField from "@material-ui/core/TextField";
 
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Grid from "@material-ui/core/Grid";
@@ -42,6 +44,7 @@ export default function Product({ cartCount, setCartCount }) {
   const classes = useStyles();
   const history = useHistory();
   const { username } = useGlobalContext();
+  const [search, setSearch] = useState("");
 
   const [products, setProducts] = useState([]);
   const [productsFilter, setProductsFilter] = useState([]);
@@ -139,6 +142,7 @@ export default function Product({ cartCount, setCartCount }) {
               contents, the creator, etc. Make it short and sweet, but not too
               short so folks don&apos;t simply skip over it entirely.
             </Typography>
+
             <div className={classes.heroButtons}>
               <Grid
                 container
@@ -162,6 +166,21 @@ export default function Product({ cartCount, setCartCount }) {
             </div>
           </Container>
         </div>
+        <center>
+          <TextField
+            label="Search"
+            id="outlined-start-adornment"
+            onChange={(event) => setSearch(event.target.value)}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">🔍</InputAdornment>
+              )
+            }}
+            variant="outlined"
+            align="center"
+            size="small"
+          />
+        </center>
         <Container className={classes.cardGrid} maxWidth="lg">
           {products.length === 0 && (
             <Typography
@@ -175,15 +194,19 @@ export default function Product({ cartCount, setCartCount }) {
             </Typography>
           )}
           <Grid container spacing={3}>
-            {products.map((product) => (
-              <Grid item key={product._id} xs={12} sm={6} md={4} lg={3}>
-                <CardItem
-                  id={product._id}
-                  product={product}
-                  getProduct={getProduct}
-                />
-              </Grid>
-            ))}
+            {products
+              .filter((data) =>
+                data.name.toLowerCase().includes(search.toLowerCase())
+              )
+              .map((product) => (
+                <Grid item key={product._id} xs={12} sm={6} md={4} lg={3}>
+                  <CardItem
+                    id={product._id}
+                    product={product}
+                    getProduct={getProduct}
+                  />
+                </Grid>
+              ))}
           </Grid>
         </Container>
       </main>
