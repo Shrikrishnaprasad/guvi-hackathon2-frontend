@@ -50,31 +50,45 @@ export default function Login() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (email !== "" && password !== "") {
-      const headersList = {
-        Accept: "*/*",
-        "Content-Type": "application/json"
-      };
-      fetch("https://node-app-krishna.herokuapp.com/user/login", {
-        method: "POST",
-        body: JSON.stringify({ username: email, password }),
-        headers: headersList
-      })
-        .then(function (response) {
-          return response.json();
+      if (email.includes("@") && email.includes(".") && email.length > 6) {
+        const headersList = {
+          Accept: "*/*",
+          "Content-Type": "application/json"
+        };
+        fetch("https://node-app-krishna.herokuapp.com/user/login", {
+          method: "POST",
+          body: JSON.stringify({ username: email, password }),
+          headers: headersList
         })
-        .then(function (data) {
-          if (data.user.username) {
-            setLoginToken(data.token);
-            setUsername(data.user.username);
-            setUserPhone(data.user.phone);
-            setUserEmail(data.user.email);
-            history.push("/");
-          } else {
-            alert(data.message);
-          }
-        })
-        .catch((e) => console.log(e));
+          .then(function (response) {
+            return response.json();
+          })
+          .then(function (data) {
+            if (data.user.username === "") {
+              console.log(data);
+              alert(data.message);
+            } else if (data.message === "Invalid login") {
+              alert(data.message);
+            } else if (data.user.username) {
+              setLoginToken(data.token);
+              setUsername(data.user.username);
+              setUserPhone(data.user.phone);
+              setUserEmail(data.user.email);
+              history.push("/");
+              alert(data.message);
+            } else {
+              alert("Invalid email or password");
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+            alert("Invalid email or password");
+          });
+      } else {
+        alert("Email is not valid");
+      }
     } else {
+      alert("Email or password is empty");
       console.log("empty");
     }
   };

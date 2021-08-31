@@ -44,28 +44,33 @@ export default function SignUp() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (email && password && phone && username) {
-      let headersList = {
-        Accept: "*/*",
-        "Content-Type": "application/json"
-      };
-      fetch("https://node-app-krishna.herokuapp.com/user/signup", {
-        method: "POST",
-        body: JSON.stringify({ username, email, password, phone }),
-        headers: headersList
-      })
-        .then(function (response) {
-          return response.json();
+      if (!email.includes("@") && !email.includes(".") && !email.length > 6) {
+        alert("Email is not valid");
+      } else {
+        const headersList = {
+          Accept: "*/*",
+          "Content-Type": "application/json"
+        };
+        fetch("https://node-app-krishna.herokuapp.com/user/signup", {
+          method: "POST",
+          body: JSON.stringify({ username, email, password, phone }),
+          headers: headersList
         })
-        .then(function (data) {
-          if (data.message === "User added !") {
-            alert(data.message);
-            history.push("/login");
-          } else {
-            alert(data.message);
-          }
-        })
-        .catch((e) => console.log(e));
+          .then(function (response) {
+            return response.json();
+          })
+          .then(function (data) {
+            if (data.message === "User added !") {
+              alert(data.message);
+              history.push("/login");
+            } else {
+              alert(data.message);
+            }
+          })
+          .catch((e) => console.log(e));
+      }
     } else {
+      alert("All fields are required");
       console.log("empty");
     }
   };
@@ -115,6 +120,7 @@ export default function SignUp() {
                 label="Email Address"
                 name="email"
                 autoComplete="email"
+                type="email"
                 onChange={(e) => setEmail(e.target.value)}
               />
             </Grid>
